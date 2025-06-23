@@ -20,6 +20,7 @@ model User{
   fullName String
   password String
   profilePic String @default("")
+  refreshToken String? 
   registeredAt   DateTime @default(now())
 }
 

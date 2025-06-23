@@ -1,11 +1,12 @@
 import express from "express";
 const router = express.Router();
-import { register } from "../controllers/auth.controller.js";
+import { login, register } from "../controllers/auth.controller.js";
+import { updateAccessToken } from "../lib/utils.js";
 
-router.post("/register",register)
-router.post("/login",async (req,res)=>{
-    
-})
+router.post("/register",register);
+router.post("/login",login);
+router.post("/refresh-token",updateAccessToken);
+
 
 router.get("/logout",async (req,res)=>{
     res.json({msg : 'logout route'})
