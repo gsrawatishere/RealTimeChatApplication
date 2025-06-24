@@ -4,6 +4,7 @@ import { generateAccessToken, generateRefreshToken } from '../lib/utils.js';
 
 const prisma = new PrismaClient();
 
+//register
 export const register = async (req,res)=>{
     try{
           const {email, fullName, password} = req.body;
@@ -33,6 +34,7 @@ export const register = async (req,res)=>{
     }
 }
 
+//login
 export const login = async (req,res)=>{
   try{
     const {email,password} = req.body;
@@ -63,3 +65,25 @@ export const login = async (req,res)=>{
   }
 }
 
+//logout
+
+export const logout = (req, res) => {
+  try {
+    res.cookie("refreshToken", "", {
+      maxAge: 0,
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    res.cookie("accessToken", "", {
+      maxAge: 0,
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    res.status(200).json({ msg: "Logged out successfully!" });
+  } catch (error) {
+    console.log("Error in Logout route!", error);
+    res.status(500).json({ msg: "Failed to Logout!", error });
+  }
+};
