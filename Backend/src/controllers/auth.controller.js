@@ -89,6 +89,8 @@ export const logout = (req, res) => {
   }
 };
 
+//update profile pic
+
 export const updateProfile = async (req,res) => {
   try {
          const {profilePic} = req.body;
