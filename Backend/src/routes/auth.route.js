@@ -10,6 +10,4 @@ router.post("/refresh-token",updateAccessToken);
 router.get("/logout",logout);
 router.put("/update-profile",verifyUser,updateProfile);
 
-
-
 export default router;  
