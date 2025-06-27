@@ -22,6 +22,8 @@ model User{
   profilePic String @default("")
   refreshToken String? 
   registeredAt   DateTime @default(now())
+  // E2EE fields
+  publicKey   String   // Base64 encoded public key of user
 
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
@@ -31,8 +33,12 @@ model Message {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   senderId String @db.ObjectId
   receiverId String @db.ObjectId
+
   text String?
   image String?
+  textNonce     String? // base64 nonce for text
+  imageNonce    String? // base64 nonce for image
+  
   timestamp DateTime @default(now()) 
 
   sender User @relation("SentMessages", fields: [senderId], references: [id])
