@@ -8,7 +8,10 @@ const prisma = new PrismaClient();
 //register
 export const register = async (req,res)=>{
     try{
-          const {email, fullName, password} = req.body;
+          const {email, fullName, password,publicKey} = req.body;
+          if(!email || !fullName || !password){
+            res.status(400).json({msg : "All fields are required!" })
+          }
           if(password.length < 6){
             res.status(400).json({msg : "Password must be at least 6 characters" })
           }
@@ -24,10 +27,14 @@ export const register = async (req,res)=>{
             data : {
                 email,
                 fullName,
-                password : hashedPassword
+                password : hashedPassword,
+                publicKey
+
             }
+
           })
-          res.status(200).json({msg : "Registered Successfully! Please Login", name : newUser.name})
+          console.log(newUser)
+          res.status(200).json({msg : "Registered Successfully! Please Login", name : newUser.fullName})
     }
     catch(error){
        console.log("error in register route",error);

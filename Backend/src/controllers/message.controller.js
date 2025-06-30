@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import cloudinary from "../lib/cloudinary";
+import cloudinary from "../lib/cloudinary.js";
 const prisma = new PrismaClient();
 
 export const getAllUsers = async (req,res)=>{
