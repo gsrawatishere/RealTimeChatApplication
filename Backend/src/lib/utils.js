@@ -36,7 +36,7 @@ export const updateAccessToken = async (req, res) => {
      const incomingRefreshToken = req.cookies.refreshToken;
  
      if (!incomingRefreshToken) {
-       return res.status(401).json({ msg: "No Refresh Token Found!" });
+       return res.status(403).json({ msg: "No Refresh Token Found!" });
      }
  
      let data;
@@ -54,7 +54,7 @@ export const updateAccessToken = async (req, res) => {
      });
  
      if (!userData) {
-       return res.status(404).json({ msg: "User not found!" });
+       return res.status(403).json({ msg: "User not found!" });
      }
  
      if (incomingRefreshToken !== userData.refreshToken) {

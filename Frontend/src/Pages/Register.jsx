@@ -5,8 +5,8 @@ import toast from 'react-hot-toast';
 import { Eye, EyeOff, Lock, Mail, MessageSquare, User } from "lucide-react";
 import { Link } from 'react-router-dom';
 import AuthImagePattern from '../Components/AuthImagePattern';
-import { axiosInstance } from '../Api/axiosInstance';
 import sodium from 'libsodium-wrappers';
+import { axiosInstance } from '../Api/axiosInstance';
 
 
 
