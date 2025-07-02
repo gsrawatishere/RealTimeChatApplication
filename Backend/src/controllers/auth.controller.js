@@ -101,18 +101,16 @@ export const logout = (req, res) => {
 export const updateProfile = async (req,res) => {
   try {
          const {profilePic} = req.body;
-
+         
           if(!profilePic) {
             return res.status(400).json({msg : "Profile pic is required!"})
           }
-
-     const uploadResponse = await cloudinary.uploader.upload(profilePic);
 
     const id = req.user.id;
 
      const updatedUser = await prisma.user.update({
       where : {id},
-      data : {profilePic : uploadResponse.secure_url}
+      data : {profilePic }
      })
   
      res.status(200).json({msg : "Updated user profile!"})
@@ -120,5 +118,15 @@ export const updateProfile = async (req,res) => {
   } catch (error) {
      console.log("Error in update profile", error);
      res.status(500).json({msg : "Error in update profile", error});
+  }
+}
+
+ export const getUserData = async (req,res)=>{
+  try {
+          const userData = req.user;
+          res.status(200).json({userData})
+  } catch (error) {
+    console.log("Error in get user data ", error);
+    res.status(500).json({msg : "Error in get user data ", error});
   }
 }

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import AuthImagePattern from '../Components/AuthImagePattern';
 import sodium from 'libsodium-wrappers';
 import { axiosInstance } from '../Api/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -16,6 +17,7 @@ const Register = () => {
     const [fullName, setfullName] = useState("");
     const [password, setpassword] = useState("");
     const [isLoading , setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
@@ -33,7 +35,9 @@ const Register = () => {
            
             // change to Indexdb in future 
             localStorage.setItem("privatekey",privateKeyBase64);
-
+            localStorage.setItem("publickey",publicKeyBase64);
+            
+            
             const response = await axiosInstance.post('/auth/register',{
                 email,
                 fullName,
@@ -48,6 +52,8 @@ const Register = () => {
              setemail("");
              setfullName("");
              setpassword(""); 
+             navigate("/");
+            
         }catch (error) {
             
             toast.error(error?.response?.data?.msg || 'Regestration failed');

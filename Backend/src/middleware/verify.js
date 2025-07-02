@@ -25,6 +25,8 @@ export const verifyUser = async (req, res, next) => {
           fullName: true,
           email: true,
           profilePic: true,
+          registeredAt : true,
+          publicKey : true
         },
       });
   

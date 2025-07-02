@@ -6,7 +6,7 @@ import { Eye, EyeOff, Lock, Mail, MessageSquare, User } from "lucide-react";
 import { Link } from 'react-router-dom';
 import AuthImagePattern from '../Components/AuthImagePattern';
 import { axiosInstance } from '../Api/axiosInstance';
-
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -15,6 +15,7 @@ const Login = () => {
     const [email, setemail] = useState("");
     const [password, setpassword] = useState("");
     const [isLoading , setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
@@ -32,9 +33,9 @@ const Login = () => {
             if(response.status==200){
                 toast.success('Login Success!');
               }
-
              setemail("");
              setpassword(""); 
+             navigate('/');
         }catch (error) {
             
             toast.error(error?.response?.data?.msg || 'Login failed');
@@ -42,7 +43,6 @@ const Login = () => {
           setIsLoading(false); 
         }
         
-    
     }
 
     return (

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export const axiosInstance = axios.create({
   baseURL: 'http://localhost:4001/api/v1', 
@@ -39,7 +40,7 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axiosInstance.post('/refresh-token');
+        await axiosInstance.post('/auth/refresh-token');
 
         // ✅ Retry all failed requests in queue
         failedQueue.forEach(({ resolve }) => resolve());
@@ -60,6 +61,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 403) {
       console.warn("🔒 Forbidden (403) → Redirecting to login");
       window.location.href = '/login';
+      toast.error("Redirecting to login unable to verify")
     }
 
     return Promise.reject(error); // Other errors
