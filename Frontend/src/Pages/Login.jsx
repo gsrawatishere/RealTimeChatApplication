@@ -24,7 +24,6 @@ const Login = () => {
         try{
             setIsLoading(true);
 
-            
             const response = await axiosInstance.post('/auth/login',{
                 email,
                 password, 

@@ -26,7 +26,6 @@ const Profile = () => {
 
   if (file.size > maxSizeInBytes) {
     toast.error("Image too large! Max allowed size is ${maxSizeInMB}MB.")
-
     return;
   }
 
@@ -57,9 +56,9 @@ const Profile = () => {
       );
 
       if (response.status === 200) {
-        toast.success("Profile updated successfully!");
-        window.location.reload(); // ✅ Quick refresh
+        window.location.reload(); // ✅ Quick refresh 
       }
+      toast.success("Profile updated successfully!");
       
     } catch (error) {
       console.error("Error updating profile:", error);

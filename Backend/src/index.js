@@ -16,6 +16,7 @@ app.use(cors({
      origin: 'http://localhost:5173',
      credentials: true               
    }));
+   
 const PORT = process.env.PORT
 app.use("/api/v1/auth",authroutes);
 app.use("/api/v1/message",messageroutes);
