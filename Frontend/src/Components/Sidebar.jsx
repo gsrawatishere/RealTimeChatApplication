@@ -13,6 +13,8 @@ const Sidebar = () => {
     const [onlineUsers,setOnlineUsers] = useState([]);
 
     useEffect(()=>{
+      setIsLoading(true);
+    
        const getUsers = async  () => {
              try {
                 const response = await axiosInstance.get("/message/users");
@@ -24,12 +26,16 @@ const Sidebar = () => {
              } catch (error) {
                 console.log(error);
                  toast.error(error?.response?.data?.msg || 'Failed to load users!');
+             } 
+             finally{
+              setIsLoading(false);
              }
          }
          getUsers();
     },[]);
-     console.log(users)
+     
     if(isLoading) return <SidebarSkeleton/>
+
    return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
       <div className="border-b border-base-300 w-full p-5">
@@ -65,8 +71,8 @@ const Sidebar = () => {
           >
             <div className="relative mx-auto lg:mx-0">
               <img
-                src={ "/avatar.png"}
-                alt={user.fullName}
+                src={user.profilePic || "/avatar.png"}
+                alt="Profile"
                 className="size-12 object-cover rounded-full"
               />
               {onlineUsers.includes(user.id) && (

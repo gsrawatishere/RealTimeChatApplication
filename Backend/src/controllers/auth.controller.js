@@ -106,11 +106,13 @@ export const updateProfile = async (req,res) => {
             return res.status(400).json({msg : "Profile pic is required!"})
           }
 
-    const id = req.user.id;
+           const uploadResponse =  await cloudinary.uploader.upload(profilePic.profilePic);
 
+         const id = req.user.id;
+  
      const updatedUser = await prisma.user.update({
       where : {id},
-      data : {profilePic }
+      data : {profilePic : uploadResponse.secure_url}
      })
   
      res.status(200).json({msg : "Updated user profile!"})

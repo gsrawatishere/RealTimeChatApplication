@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { Camera, Mail, User } from "lucide-react";
 import { axiosInstance } from "../Api/axiosInstance";
 import toast from "react-hot-toast";
-import sodium from 'libsodium-wrappers';
+// import sodium from 'libsodium-wrappers';
 
 
 const Profile = () => {
   const [selectedImg, setSelectedImg] = useState(null);
   const [isUpdatingProfile, setisUpdatingProfile] = useState(false);
   const [authUser, setAuthUser] = useState({});
-  const [profile,setProfile] = useState();
+  
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -38,100 +38,126 @@ const Profile = () => {
       await updateProfile({ profilePic: base64Image });
     };
   };
+ 
+  const updateProfile = async (data) => {
+        setisUpdatingProfile(true);
+       try {
+            const response = await axiosInstance.put("/auth/update-profile",
+              {profilePic : data}
+            );
+            if(response.status == 200){
+              toast.success("Profile updated successfully!")
+              fetchUserData();
+            }
+       } catch (error) {
+            toast.error(error?.response?.data?.msg || "Failed to update profile!");
+       }finally{
+        setisUpdatingProfile(false);
+       }
+  } 
+  const fetchUserData = async ()=>{
+         const response = await axiosInstance("/auth/getUser");
+        const userData = response.data.userData;
+        setAuthUser(userData);
+       }
 
+  useEffect(()=>{
+        fetchUserData();
+  },[])
+      
   // update profile pic 
 
-  const updateProfile = async (data) => {
-    setisUpdatingProfile(true);
-    try {
+  // const updateProfile = async (data) => {
+  //   setisUpdatingProfile(true);
+  //   try {
 
-      // encryption 
-      await sodium.ready;
-      const publicKeyBase64 = localStorage.getItem("publickey");
+  //     // encryption 
+  //     await sodium.ready;
+  //     const publicKeyBase64 = localStorage.getItem("publickey");
       
-      const encryptedImage = await encryptBase64Image(data.profilePic, publicKeyBase64);
+  //     const encryptedImage = await encryptBase64Image(data.profilePic, publicKeyBase64);
       
-      const response = await axiosInstance.put("/auth/update-profile", 
-        {profilePic: encryptedImage},
-      );
+  //     const response = await axiosInstance.put("/auth/update-profile", 
+  //       {profilePic: encryptedImage},
+  //     );
 
-      if (response.status === 200) {
-        window.location.reload(); // ✅ Quick refresh 
-      }
-      toast.success("Profile updated successfully!");
+  //     if (response.status === 200) {
+  //       window.location.reload(); // ✅ Quick refresh 
+  //     }
+  //     toast.success("Profile updated successfully!");
       
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error(error?.response?.data?.msg || "Failed to update profile!");
-    } finally {
-      setisUpdatingProfile(false);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error updating profile:", error);
+  //     toast.error(error?.response?.data?.msg || "Failed to update profile!");
+  //   } finally {
+  //     setisUpdatingProfile(false);
+  //   }
+  // };
 
  // Encrypt Before sending
 
-const encryptBase64Image = async (base64Image, receiverPublicKeyBase64) => {
-  await sodium.ready;
+// const encryptBase64Image = async (base64Image, receiverPublicKeyBase64) => {
+//   await sodium.ready;
 
-  const publicKey = sodium.from_base64(receiverPublicKeyBase64);
-  const message = sodium.from_string(base64Image); 
-  const encrypted = sodium.crypto_box_seal(message, publicKey);
-  return sodium.to_base64(encrypted); 
-};
+//   const publicKey = sodium.from_base64(receiverPublicKeyBase64);
+//   const message = sodium.from_string(base64Image); 
+//   const encrypted = sodium.crypto_box_seal(message, publicKey);
+//   return sodium.to_base64(encrypted); 
+// };
 
-const decryptBase64Image = async (encryptedBase64, privateKeyBase64, publicKeyBase64) => {
-  await sodium.ready;
+// const decryptBase64Image = async (encryptedBase64, privateKeyBase64, publicKeyBase64) => {
+//   await sodium.ready;
 
-  const privateKey = sodium.from_base64(privateKeyBase64);
-  const publicKey = sodium.from_base64(publicKeyBase64);
-  const encryptedBytes = sodium.from_base64(encryptedBase64);
+//   const privateKey = sodium.from_base64(privateKeyBase64);
+//   const publicKey = sodium.from_base64(publicKeyBase64);
+//   const encryptedBytes = sodium.from_base64(encryptedBase64);
 
-  const decryptedBytes = sodium.crypto_box_seal_open(encryptedBytes, publicKey, privateKey);
+//   const decryptedBytes = sodium.crypto_box_seal_open(encryptedBytes, publicKey, privateKey);
 
-  if (!decryptedBytes) {
-    throw new Error("Decryption failed. Possibly incorrect keys.");
-  }
+//   if (!decryptedBytes) {
+//     throw new Error("Decryption failed. Possibly incorrect keys.");
+//   }
 
-  // Convert decrypted string (base64) back to image format
-  return sodium.to_string(decryptedBytes); // base64 image string
-};
+//   // Convert decrypted string (base64) back to image format
+//   return sodium.to_string(decryptedBytes); // base64 image string
+// };
 
 // get user details
 
-useEffect(() => {
-  const fetchUserData = async () => {
-    try {
-      const response = await axiosInstance.get("/auth/getUser");
-      const userData = response.data.userData;
+// useEffect(() => {
+//   const fetchUserData = async () => {
+//     try {
+//       const response = await axiosInstance.get("/auth/getUser");
+//       const userData = response.data.userData;
 
-      // First, store the user data
-      setAuthUser(userData);
+//       // First, store the user data
+//       setAuthUser(userData);
 
-      // Then, safely access keys for decryption
-      const encryptedBase64 = userData.profilePic;
-      const privateKeyBase64 = localStorage.getItem("privatekey"); 
-      const publicKeyBase64 =  localStorage.getItem("publickey");
+//       // Then, safely access keys for decryption
+//       const encryptedBase64 = userData.profilePic;
+//       const privateKeyBase64 = localStorage.getItem("privatekey"); 
+//       const publicKeyBase64 =  localStorage.getItem("publickey");
 
   
-      if (!encryptedBase64 || !privateKeyBase64 || !publicKeyBase64) {
-        console.warn("Missing encryption keys or image");
-        return;
-      }
+//       if (!encryptedBase64 || !privateKeyBase64 || !publicKeyBase64) {
+//         console.warn("Missing encryption keys or image");
+//         return;
+//       }
 
-      const decryptedBase64 = await decryptBase64Image(
-        encryptedBase64,
-        privateKeyBase64,
-        publicKeyBase64
-      );
+//       const decryptedBase64 = await decryptBase64Image(
+//         encryptedBase64,
+//         privateKeyBase64,
+//         publicKeyBase64
+//       );
 
-      setProfile(decryptedBase64);
-    } catch (error) {
-      console.error("Error fetching or decrypting user data:", error);
-    }
-  };
+//       setProfile(decryptedBase64);
+//     } catch (error) {
+//       console.error("Error fetching or decrypting user data:", error);
+//     }
+//   };
 
-  fetchUserData();
-}, []);
+//   fetchUserData();
+// }, []);
 
   return (
     <div className="h-screen pt-20">
@@ -146,7 +172,7 @@ useEffect(() => {
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <img
-                src={ profile || "/avatar.png"}
+                src={ authUser.profilePic || "/avatar.png"}
                 alt="Profile"
                 className="size-32 rounded-full object-cover border-4"
               />
@@ -220,5 +246,6 @@ useEffect(() => {
     </div>
   );
 };
+
 
 export default Profile;
